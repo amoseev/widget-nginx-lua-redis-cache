@@ -6,6 +6,7 @@ ENV VER_NGINX_DEVEL_KIT=0.2.19
 ENV VER_LUA_NGINX_MODULE=0.9.16
 ENV VER_NGINX=1.9.3
 ENV VER_LUAJIT=2.0.4
+ENV VER_LUA_CJSON_MODULE=2.1.0.3
 
 ENV NGINX_DEVEL_KIT ngx_devel_kit-${VER_NGINX_DEVEL_KIT}
 ENV LUA_NGINX_MODULE lua-nginx-module-${VER_LUA_NGINX_MODULE}
@@ -44,6 +45,9 @@ RUN apt-get -qq -y install zlib1g-dev
 RUN apt-get -qq -y install libssl-dev
 # LUAJit dependencies
 RUN apt-get -qq -y install gcc
+# Lua rocks for compile
+RUN apt-get -qq -y install luarocks
+#RUN apt-get -qq -y install lua-cjson
 
 # ***** DOWNLOAD AND UNTAR *****
 
@@ -55,6 +59,7 @@ RUN wget https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX_
 
 #Download openresty libs
 RUN wget https://github.com/openresty/lua-resty-redis/archive/v${VER_LUA_RESTY_REDIS}.tar.gz -O ${LUA_RESTY_REDIS}.tar.gz
+RUN wget https://codeload.github.com/openresty/lua-cjson/tar.gz/${VER_LUA_CJSON_MODULE} -O lua-cjson-${VER_LUA_CJSON_MODULE}.tar.gz
 
 # Untar
 RUN tar -xzvf nginx-${VER_NGINX}.tar.gz && rm nginx-${VER_NGINX}.tar.gz
@@ -64,9 +69,12 @@ RUN tar -xzvf ${LUA_NGINX_MODULE}.tar.gz && rm ${LUA_NGINX_MODULE}.tar.gz
 
 #Lua LIBS
 RUN tar -xzvf ${LUA_RESTY_REDIS}.tar.gz && rm ${LUA_RESTY_REDIS}.tar.gz
+RUN tar -xzvf lua-cjson-${VER_LUA_CJSON_MODULE}.tar.gz && rm lua-cjson-${VER_LUA_CJSON_MODULE}.tar.gz
+RUN cd ./lua-cjson-${VER_LUA_CJSON_MODULE} && luarocks make && cd ..
 
 # copy openresty libraries to LUAJIT_LIB
 RUN cp -r ${LUA_RESTY_REDIS}/lib ${LUAJIT_LIB}/lua-libs
+RUN cp -r lua-cjson-${VER_LUA_CJSON_MODULE}/lua ${LUAJIT_LIB}/lua-libs
 
 
 # ***** BUILD FROM SOURCE *****
