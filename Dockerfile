@@ -100,6 +100,8 @@ RUN rm -rf /${LUA_NGINX_MODULE}
 COPY conf/nginx /nginx/conf/
 COPY conf/redis.conf /etc/redis/redis.conf
 RUN mkdir -p /var/log/nginx
+RUN mkdir -p /var/www/lua
+COPY lua /var/www/lua
 
 # Run nginx and dnsmasq under supervisor
 CMD ["/usr/bin/supervisord"]
