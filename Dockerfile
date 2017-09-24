@@ -24,6 +24,7 @@ ENV LUAJIT_INC /usr/local/include/luajit-2.0
 
 RUN apt-get -qq update
 RUN apt-get -qq -y install wget supervisor
+RUN apt-get -qq -y install redis-server
 
 # Instal lighweight DNS for proper nginx name resolution based on /etc/hosts
 RUN apt-get -qq -y install dnsmasq
@@ -86,6 +87,7 @@ RUN ln -s ${NGINX_ROOT}/sbin/nginx /usr/local/sbin/nginx
 WORKDIR ${WEB_DIR}
 EXPOSE 80
 EXPOSE 443
+EXPOSE 6379
 
 # ***** CLEANUP *****
 RUN rm -rf /nginx-${VER_NGINX}
@@ -95,8 +97,9 @@ RUN rm -rf /${LUA_NGINX_MODULE}
 # TODO: Uninstall build only dependencies?
 # TODO: Remove env vars used only for build?
 
-copy nginx.conf /nginx/conf/nginx.conf
-copy nginx-lua.conf /nginx/conf/nginx-lua.conf
+COPY conf/nginx /nginx/conf/
+COPY conf/redis.conf /etc/redis/redis.conf
+RUN mkdir -p /var/log/nginx
 
 # Run nginx and dnsmasq under supervisor
 CMD ["/usr/bin/supervisord"]

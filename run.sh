@@ -4,11 +4,12 @@ IMAGE=amoseev/widget
 TAG='latest'
 CONTAINER_NAME=widget-cache
 
+docker build -t $IMAGE:$TAG .
+
 #stop container and remove image
 docker stop $CONTAINER_NAME #> /dev/null 2>&1
 #remove the container
 docker rm $CONTAINER_NAME #> /dev/null 2>&1
 
-#!! run the redis container first
-#docker run -d --name redis redis
-docker run -d --link redis:redis -p 9090:80 --name $CONTAINER_NAME $IMAGE
+docker run -d -p 80:80 -p 6379:6379 --name $CONTAINER_NAME $IMAGE
+# docker exec  -it  widget-cache  bash
