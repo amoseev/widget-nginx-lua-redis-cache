@@ -69,8 +69,6 @@ if (ngx.var.request_method ~= 'GET') then
     ngx.exit();
 end
 
-ngx.header["Content-Type"] = "text/plain";
-ngx.status = 200
 
 -- Connect to Redis
 local redis = require "resty.redis"
