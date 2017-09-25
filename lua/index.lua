@@ -77,7 +77,7 @@ local redis = require "resty.redis"
 local red = redis:new()
 red:set_timeout(1000)
 
--- todo config (лучше хост редиса определить yclients.cache.redis.com. и по нему ходить. порт хз
+-- todo config (лучше хост редиса определить site.cache.redis.com. и по нему ходить. порт хз
 local ok, err = red:connect(CONFIG_REDIS_HOST, CONFIG_REDIS_PORT)
 if not ok then
     ngx.log(ngx.STDERR, "Failed to connect to Redis: " .. err)
